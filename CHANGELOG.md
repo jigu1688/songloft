@@ -1,3 +1,11 @@
+## [v2.0.1] - 2026-05-29
+### :sparkles: New Features
+- [`0741adc`](https://github.com/songloft-org/songloft/commit/0741adcd0adc261c6997b42eed62d29f8793b628) - 新增前端调试模式打包 *(commit by [@hanxi](https://github.com/hanxi))*
+
+### :wrench: Chores
+- [`731ab3c`](https://github.com/songloft-org/songloft/commit/731ab3c0dc2cd540cdc6270df6587a52bd122183) - release version 2.0.1 *(commit by [@hanxi](https://github.com/hanxi))*
+
+
 ## [v2.0.0-alpha.1] - 2026-05-29
 ### :sparkles: New Features
 - [`58232ea`](https://github.com/songloft-org/songloft/commit/58232ea174ce9fa6e14cdd1c805bf7410220f0c5) - **app**: one-shot mimusic.db -> songloft.db auto migration (v2.0) *(commit by [@hanxi](https://github.com/hanxi))*
@@ -867,3 +875,4 @@
 - `09e2957` 简化登录
 - `f8fc2c5` 改名为mimusic
 [v2.0.0-alpha.1]: https://github.com/songloft-org/songloft/compare/e0a9fd8a53e21bc17982323664e10f8d9549531a...v2.0.0-alpha.1
+[v2.0.1]: https://github.com/songloft-org/songloft/compare/v2.0.0...v2.0.1
