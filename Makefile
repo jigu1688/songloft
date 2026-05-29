@@ -323,7 +323,7 @@ swagger: ## 生成/更新 Swagger API 文档
 	@sed -i '' 's|^// @version .*|// @version $(VERSION)|' main.go 2>/dev/null || \
 		sed -i 's|^// @version .*|// @version $(VERSION)|' main.go
 	@echo "$(BLUE)正在生成 Swagger 文档...$(NC)"
-	@which swag > /dev/null || (echo "$(RED)错误: swag 未安装，请运行: go install github.com/swaggo/swag/cmd/swag@latest$(NC)" && exit 1)
+	@which swag > /dev/null || (echo "$(BLUE)swag 未安装，正在自动安装...$(NC)" && go install github.com/swaggo/swag/cmd/swag@latest)
 	swag init
 	@echo "$(GREEN)✓ Swagger 文档生成完成（版本: $(VERSION)）$(NC)"
 

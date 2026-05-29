@@ -31,8 +31,6 @@ push tag 后，[`release.yml`](../.github/workflows/release.yml) 会自动：
 4. 创建 GitHub Release 并上传所有产物
 5. 用 [`requarks/changelog-action`](https://github.com/requarks/changelog-action) 基于 Conventional Commits 生成 changelog，作为 Release Notes，并把内容追加到 `CHANGELOG.md` 顶部 commit 回 `main`
 
-> 注意：当前 `release.yml` 默认仅 `workflow_dispatch` 触发（生成 prerelease，不写 `CHANGELOG.md`）。要让 push tag 自动跑全套 stable 流程并回写 CHANGELOG，需取消文件顶部 `push: tags: - 'v*'` 段的注释。
-
 ## 🔁 submodule-update.sh
 
 批量同步所有子模块（`songloft-player` / `plugin-toolchain` / `pkg/tag` / `jsplugins-src/*` / `jsplugins` 等）到各自的 main：
