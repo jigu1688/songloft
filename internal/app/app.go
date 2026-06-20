@@ -164,7 +164,24 @@ func (a *App) Init() error {
 	}
 	if err := a.configService.GetJSON("scan_config", &scanConfigData); err != nil {
 		slog.Warn("读取扫描配置失败，使用默认值", "error", err)
-		scanConfigData.SupportedFormats = []string{"mp3", "flac", "wav", "ape", "ogg", "m4a", "wma"}
+		scanConfigData.SupportedFormats = []string{"mp3", "flac", "wav", "ape", "ogg", "m4a", "wma", "aac"}
+	} else {
+		// 确保 aac 在支持的格式列表中
+		hasAAC := false
+		for _, f := range scanConfigData.SupportedFormats {
+			if strings.ToLower(f) == "aac" {
+				hasAAC = true
+				break
+			}
+		}
+		if !hasAAC {
+			scanConfigData.SupportedFormats = append(scanConfigData.SupportedFormats, "aac")
+			if err := a.configService.SetJSON("scan_config", &scanConfigData); err != nil {
+				slog.Warn("自动添加 aac 到扫描格式配置失败", "error", err)
+			} else {
+				slog.Info("自动添加 aac 到扫描格式配置成功")
+			}
+		}
 	}
 
 	// 读取标题来源配置
@@ -446,7 +463,7 @@ func (a *App) onMusicPathConfigChanged(scanHandler *handlers.ScanHandler) {
 	}
 	if err := a.configService.GetJSON("scan_config", &scanConfigData); err != nil {
 		slog.Warn("配置变更回调：读取 scan_config 失败，使用默认值", "error", err)
-		scanConfigData.SupportedFormats = []string{"mp3", "flac", "wav", "ape", "ogg", "m4a", "wma"}
+		scanConfigData.SupportedFormats = []string{"mp3", "flac", "wav", "ape", "ogg", "m4a", "wma", "aac"}
 	}
 
 	// 重建 Scanner
