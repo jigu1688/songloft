@@ -3,7 +3,7 @@
 	url = https://github.com/hanxi/tag.git
 [submodule "songloft-player"]
 	path = songloft-player
-	url = https://github.com/songloft-org/songloft-player.git
+	url = https://github.com/jigu1688/songloft-player.git
 [submodule "plugin-toolchain"]
 	path = plugin-toolchain
 	url = https://github.com/songloft-org/plugin-toolchain.git
