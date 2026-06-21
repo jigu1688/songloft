@@ -199,7 +199,7 @@ func (m *JSEnvManager) CreateEnv(envID, initCode string, pluginID int64) error {
 		created:      time.Now(),
 		events:       make(chan JSEventResult, 64),
 		sourceCode:   initCode,
-		asyncResults: make(chan asyncResult, 256),
+		asyncResults: make(chan asyncResult, 2048),
 		asyncSignal:  make(chan struct{}, 1),
 	}
 
@@ -261,7 +261,7 @@ func (m *JSEnvManager) CreateEnvWithBytecode(envID, bootstrapCode string, byteco
 		pluginID:     pluginID,
 		created:      time.Now(),
 		events:       make(chan JSEventResult, 64),
-		asyncResults: make(chan asyncResult, 256),
+		asyncResults: make(chan asyncResult, 2048),
 		// 字节码模式无源码可编译，sourceCode 留空
 	}
 
