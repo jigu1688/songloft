@@ -792,7 +792,14 @@ func (h *SongHandler) GetSongPlay(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 	song, err := h.songService.GetByID(ctx, songID)
-	if err != nil || song == nil {
+	if err != nil {
+		if r.Context().Err() != nil {
+			return
+		}
+		http.NotFound(w, r)
+		return
+	}
+	if song == nil {
 		http.NotFound(w, r)
 		return
 	}

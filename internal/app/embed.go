@@ -22,6 +22,17 @@ func (a *App) registerWebStatic() {
 	mime.AddExtensionType(".wasm", "application/wasm")
 	mime.AddExtensionType(".otf", "font/otf")
 
+	// Register audio format MIME types to prevent Alpine containers (which lack mailcap/mime.types)
+	// from serving audio files as application/octet-stream, causing browser decoding failures.
+	mime.AddExtensionType(".aac", "audio/aac")
+	mime.AddExtensionType(".mp3", "audio/mpeg")
+	mime.AddExtensionType(".m4a", "audio/mp4")
+	mime.AddExtensionType(".ogg", "audio/ogg")
+	mime.AddExtensionType(".flac", "audio/flac")
+	mime.AddExtensionType(".wav", "audio/wav")
+	mime.AddExtensionType(".ape", "audio/ape")
+	mime.AddExtensionType(".wma", "audio/x-ms-wma")
+
 	distFS, err := fs.Sub(a.webDist, webEmbedRoot)
 	if err != nil {
 		slog.Warn("registerWebStatic: fs.Sub 失败，跳过前端挂载", "error", err)
