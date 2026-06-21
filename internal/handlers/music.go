@@ -810,6 +810,23 @@ func (h *SongHandler) GetSongPlay(w http.ResponseWriter, r *http.Request) {
 		targetFormat = "mp3"
 	}
 
+	// 针对 .aac 文件的强力兼容：如果原始文件是以 .aac 结尾的 ADTS 流文件，
+	// 浏览器（Web 平台）以及许多播放器在没有 container 包装时无法直接进行 Seek 或可靠播放。
+	// 若客户端未指定 format，在此强制将其转码为 mp3，以确保 100% 的播放成功率和 Seek 支持。
+	if targetFormat == "" {
+		isAAC := false
+		if song.FilePath != "" && strings.ToLower(filepath.Ext(song.FilePath)) == ".aac" {
+			isAAC = true
+		} else if song.CachePath != "" && strings.ToLower(filepath.Ext(song.CachePath)) == ".aac" {
+			isAAC = true
+		} else if strings.ToLower(song.Format) == "aac" || strings.ToLower(song.Format) == "adts" {
+			isAAC = true
+		}
+		if isAAC {
+			targetFormat = "mp3"
+		}
+	}
+
 	// 预拉取模式：异步触发缓存 + 转码预热，立即返回 202。
 	// 不能用 r.Context()，否则 202 发出后客户端断开会 Kill ffmpeg，预热失败。
 	// 但通过 playActivity.Track 让 prefetch 能在下一次 Activate 时被 cancel，
