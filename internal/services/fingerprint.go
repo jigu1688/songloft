@@ -3,6 +3,7 @@ package services
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"os/exec"
@@ -18,16 +19,25 @@ import (
 
 var (
 	chromaprintAvailable bool
+	useFpcalc            bool
 	chromaprintOnce      sync.Once
 	durationRe           = regexp.MustCompile(`Duration:\s+(\d+):(\d+):(\d+)\.(\d+)`)
 )
 
-// IsChromaprintAvailable 检测 ffmpeg 是否支持 chromaprint muxer（首次调用时检测，结果缓存）。
+// IsChromaprintAvailable 检测是否有可用的音频指纹工具（优先 fpcalc，其次是支持 chromaprint muxer 的 ffmpeg）。
 func IsChromaprintAvailable() bool {
 	chromaprintOnce.Do(func() {
+		// 1. 优先检测 fpcalc 是否存在
+		if _, err := exec.LookPath("fpcalc"); err == nil {
+			chromaprintAvailable = true
+			useFpcalc = true
+			return
+		}
+		// 2. 其次检测 ffmpeg 是否支持 chromaprint muxer
 		out, err := exec.Command("ffmpeg", "-hide_banner", "-muxers").Output()
 		if err == nil && strings.Contains(string(out), "chromaprint") {
 			chromaprintAvailable = true
+			useFpcalc = false
 		}
 	})
 	return chromaprintAvailable
@@ -49,11 +59,34 @@ func parseDurationFromStderr(stderr string) float64 {
 	return float64(hours)*3600 + float64(minutes)*60 + float64(seconds) + float64(frac)/divisor
 }
 
-// ExtractFingerprint 调用 ffmpeg chromaprint muxer 提取音频指纹。
+// ExtractFingerprint 提取音频指纹。优先使用 fpcalc，其次使用 ffmpeg chromaprint muxer。
 func ExtractFingerprint(ctx context.Context, filePath string) (string, float64, error) {
 	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
 
+	// 确保检测过可用性
+	IsChromaprintAvailable()
+
+	if useFpcalc {
+		cmd := exec.CommandContext(ctx, "fpcalc", "-json", filePath)
+		output, err := cmd.Output()
+		if err != nil {
+			return "", 0, fmt.Errorf("fpcalc failed: %w", err)
+		}
+		var fpRes struct {
+			Duration    float64 `json:"duration"`
+			Fingerprint string  `json:"fingerprint"`
+		}
+		if err := json.Unmarshal(output, &fpRes); err != nil {
+			return "", 0, fmt.Errorf("failed to parse fpcalc JSON: %w", err)
+		}
+		if fpRes.Fingerprint == "" {
+			return "", 0, fmt.Errorf("fpcalc returned empty fingerprint")
+		}
+		return fpRes.Fingerprint, fpRes.Duration, nil
+	}
+
+	// 降级使用 ffmpeg chromaprint muxer
 	cmd := exec.CommandContext(ctx, "ffmpeg",
 		"-i", filePath,
 		"-map", "0:a:0",
