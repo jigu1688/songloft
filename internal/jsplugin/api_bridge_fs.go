@@ -60,7 +60,7 @@ func (h *BridgeHandler) resolveFSPath(inputPath string) (string, error) {
 		return resolveContained(musicPath, rel, sep)
 	}
 
-	if filepath.IsAbs(inputPath) {
+	if filepath.IsAbs(inputPath) || strings.HasPrefix(inputPath, "/") || strings.HasPrefix(inputPath, "\\") {
 		if !CheckPermission(h.permissions, PermFSExternal) {
 			return "", fmt.Errorf("requires fs:external permission")
 		}

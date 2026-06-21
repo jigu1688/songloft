@@ -638,6 +638,19 @@ func (m *Manager) handleServeFileDirective(w http.ResponseWriter, r *http.Reques
 //   - "/absolute/path" → 绝对路径（需 fs:external 权限 + 在配置的目录内）
 //   - "relative/path" → {pluginsDataDir}/{entryPath}/relative/path（需 fs 权限）
 func (m *Manager) resolveServeFilePath(entryPath, filePath string) (string, error) {
+	// Normalize root-relative paths like "app/audiobook/..." on Windows to "/app/audiobook/..."
+	if !filepath.IsAbs(filePath) && !strings.HasPrefix(filePath, "/") && !strings.HasPrefix(filePath, "\\") {
+		allowedPaths := m.getPluginExternalPaths(entryPath)
+		for _, dir := range allowedPaths {
+			cleanDir := strings.TrimPrefix(dir, "/")
+			cleanDir = strings.TrimPrefix(cleanDir, "\\")
+			if strings.HasPrefix(filePath, cleanDir) {
+				filePath = "/" + filePath
+				break
+			}
+		}
+	}
+
 	if strings.HasPrefix(filePath, "music://") {
 		if !m.pluginHasPermission(entryPath, PermFSMusic) {
 			return "", errors.New("requires fs:music permission")
@@ -650,7 +663,7 @@ func (m *Manager) resolveServeFilePath(entryPath, filePath string) (string, erro
 		return resolveInDir(musicPath, rel)
 	}
 
-	if filepath.IsAbs(filePath) {
+	if filepath.IsAbs(filePath) || strings.HasPrefix(filePath, "/") || strings.HasPrefix(filePath, "\\") {
 		if !m.pluginHasPermission(entryPath, PermFSExternal) {
 			return "", errors.New("requires fs:external permission")
 		}
