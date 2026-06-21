@@ -464,9 +464,9 @@ func (s *JSService) handleHTTPRequest(msg *Message) *Message {
 	}
 
 	// 传 msg.Ctx：客户端 abort 旧切歌请求时，scheduler.Call 会 cancel 这个 ctx，
-	// ExecuteJS 的事件循环会立即退出，让 worker 处理下一条消息，避免被 30s
+	// ExecuteJS 的事件循环会立即退出，让 worker 处理下一条消息，避免被 5min
 	// 上限的 ExecuteJS 卡住，新切的歌排在它后面一直 pending（issue #79 的关键根因）。
-	result, err := s.jsManager.ExecuteJS(msg.Ctx, s.envID, code, 30000)
+	result, err := s.jsManager.ExecuteJS(msg.Ctx, s.envID, code, 300000)
 	if err != nil {
 		statusCode := 500
 		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {

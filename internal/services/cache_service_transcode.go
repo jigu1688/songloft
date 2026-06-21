@@ -258,9 +258,9 @@ func NormalizeFormat(f string) string {
 	switch f {
 	case "mpeg", "mp3":
 		return "mp3"
-	case "mp4", "m4a":
+	case "mp4", "m4a", "mov":
 		return "m4a"
-	case "aac":
+	case "aac", "adts":
 		return "aac"
 	case "ogg", "vorbis":
 		return "ogg"
@@ -297,6 +297,11 @@ func ffmpegArgs(targetFormat string, bitrate int) (encoder string, qualityArgs [
 			return "aac", []string{"-b:a", bitrateArg}, "ipod", nil
 		}
 		return "aac", []string{"-b:a", "256k"}, "ipod", nil
+	case "aac":
+		if bitrate > 0 {
+			return "aac", []string{"-b:a", bitrateArg}, "adts", nil
+		}
+		return "aac", []string{"-b:a", "256k"}, "adts", nil
 	case "flac":
 		return "flac", nil, "flac", nil
 	case "wav":

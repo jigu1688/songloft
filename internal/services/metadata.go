@@ -158,7 +158,7 @@ func (m *MetadataExtractor) Extract(ctx context.Context, filePath string) (*Meta
 		if metadata.Format == "" && probeOutput.Format.FormatName != "" {
 			formats := strings.Split(probeOutput.Format.FormatName, ",")
 			if len(formats) > 0 {
-				metadata.Format = formats[0]
+				metadata.Format = NormalizeFormat(formats[0])
 			}
 		}
 
@@ -295,7 +295,7 @@ func (m *MetadataExtractor) ProbeForValidation(ctx context.Context, filePath str
 		if info.Format == "" && probe.Format.FormatName != "" {
 			formats := strings.Split(probe.Format.FormatName, ",")
 			if len(formats) > 0 {
-				info.Format = formats[0]
+				info.Format = NormalizeFormat(formats[0])
 			}
 		}
 	}
