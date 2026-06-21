@@ -11,6 +11,8 @@ on:
       - '**.md'
       - 'LICENSE'
       - '.gitignore'
+      - 'jsplugins-src/**'
+      - 'plugin-toolchain/**'
   workflow_dispatch: # 手动触发同样走 dev 路径
 
 env:
