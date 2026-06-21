@@ -25,7 +25,7 @@ const (
 
 const (
 	defaultQueueSize   = 256
-	defaultCallTimeout = 30 * time.Second
+	defaultCallTimeout = 300 * time.Second
 )
 
 // 错误定义

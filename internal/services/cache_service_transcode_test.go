@@ -18,7 +18,7 @@ func TestNormalizeFormat(t *testing.T) {
 		{"mpeg", "mp3"},
 		{".mp3", "mp3"},
 		{"m4a", "m4a"},
-		{"aac", "m4a"},
+		{"aac", "aac"},
 		{"mp4", "m4a"},
 		{"ogg", "ogg"},
 		{"vorbis", "ogg"},
@@ -52,7 +52,7 @@ func TestNeedsTranscode(t *testing.T) {
 		{"wma", "mp3", true},
 		{"ape", "flac", true},
 		{"flac", "mp3", true},
-		{"m4a", "aac", false},
+		{"m4a", "aac", true},
 		{"", "mp3", false}, // 未知源格式不转码，避免误判
 	}
 	for _, tt := range tests {

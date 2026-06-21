@@ -45,9 +45,6 @@ func (h *BridgeHandler) resolveFSPath(inputPath string) (string, error) {
 	if inputPath == "" {
 		return "", fmt.Errorf("path cannot be empty")
 	}
-	if strings.Contains(inputPath, "..") {
-		return "", fmt.Errorf("path cannot contain '..'")
-	}
 
 	sep := string(filepath.Separator)
 

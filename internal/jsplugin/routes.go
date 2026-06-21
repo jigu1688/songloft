@@ -638,10 +638,6 @@ func (m *Manager) handleServeFileDirective(w http.ResponseWriter, r *http.Reques
 //   - "/absolute/path" → 绝对路径（需 fs:external 权限 + 在配置的目录内）
 //   - "relative/path" → {pluginsDataDir}/{entryPath}/relative/path（需 fs 权限）
 func (m *Manager) resolveServeFilePath(entryPath, filePath string) (string, error) {
-	if strings.Contains(filePath, "..") {
-		return "", errors.New("path traversal rejected")
-	}
-
 	if strings.HasPrefix(filePath, "music://") {
 		if !m.pluginHasPermission(entryPath, PermFSMusic) {
 			return "", errors.New("requires fs:music permission")

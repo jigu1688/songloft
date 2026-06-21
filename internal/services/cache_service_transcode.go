@@ -258,8 +258,10 @@ func NormalizeFormat(f string) string {
 	switch f {
 	case "mpeg", "mp3":
 		return "mp3"
-	case "mp4", "m4a", "aac":
+	case "mp4", "m4a":
 		return "m4a"
+	case "aac":
+		return "aac"
 	case "ogg", "vorbis":
 		return "ogg"
 	case "flac":
