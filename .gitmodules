@@ -40,3 +40,6 @@
 [submodule "jsplugins-src/songloft-plugin-lyrics"]
 	path = jsplugins-src/songloft-plugin-lyrics
 	url = https://github.com/jigu1688/songloft-plugin-lyrics.git
+[submodule "jsplugins-src/songloft-plugin-audiobook"]
+	path = jsplugins-src/songloft-plugin-audiobook
+	url = https://github.com/jigu1688/songloft-plugin-audiobook.git
